@@ -17,6 +17,7 @@ class Admin_Assets {
 		'gamenight_page_gnl-admin-event-new',
 		'gamenight_page_gnl-admin-posts',
 		'gamenight_page_gnl-admin-post-new',
+		'gamenight_page_gnl-admin-shortcodes',
 	);
 
 	public function register() {
@@ -72,6 +73,8 @@ class Admin_Assets {
 					'post_deleted'    => __( 'Post deleted.', 'gamenight-league' ),
 					/* translators: %s: post title */
 					'confirm_post_delete' => __( 'Delete "%s"? Comments on this post will also be deleted.', 'gamenight-league' ),
+					'copied'              => __( 'Copied!', 'gamenight-league' ),
+					'copy_failed'         => __( 'Copy failed — select and copy manually.', 'gamenight-league' ),
 				),
 			)
 		);

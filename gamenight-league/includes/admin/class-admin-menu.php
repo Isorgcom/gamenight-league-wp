@@ -16,8 +16,9 @@ class Admin_Menu {
 	const SLUG_ROOT      = 'gnl-admin';
 	const SLUG_EVENTS    = 'gnl-admin-events';
 	const SLUG_EVENT_NEW = 'gnl-admin-event-new';
-	const SLUG_POSTS     = 'gnl-admin-posts';
-	const SLUG_POST_NEW  = 'gnl-admin-post-new';
+	const SLUG_POSTS      = 'gnl-admin-posts';
+	const SLUG_POST_NEW   = 'gnl-admin-post-new';
+	const SLUG_SHORTCODES = 'gnl-admin-shortcodes';
 	const CAPABILITY     = 'manage_options';
 
 	/** @var Api_Client */
@@ -80,6 +81,14 @@ class Admin_Menu {
 			self::CAPABILITY,
 			self::SLUG_POST_NEW,
 			array( $this, 'render_post_edit' )
+		);
+		add_submenu_page(
+			self::SLUG_ROOT,
+			__( 'Shortcodes', 'gamenight-league' ),
+			__( 'Shortcodes', 'gamenight-league' ),
+			self::CAPABILITY,
+			self::SLUG_SHORTCODES,
+			array( $this, 'render_shortcodes' )
 		);
 	}
 
@@ -150,5 +159,12 @@ class Admin_Menu {
 			$post = $api->get_post( $post_id );
 		}
 		include GNL_PATH . 'includes/admin/views/view-post-edit.php';
+	}
+
+	public function render_shortcodes() {
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return;
+		}
+		include GNL_PATH . 'includes/admin/views/view-shortcodes.php';
 	}
 }

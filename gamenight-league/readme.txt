@@ -4,7 +4,7 @@ Tags: gamenight, league, poker, events, rsvp
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.3.1
+Stable tag: 0.3.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -205,6 +205,9 @@ Not in this version. The GameNight admin menu and all admin REST endpoints requi
 Yes, two ways: (1) write CSS targeting the `.gnl-*` classes the plugin emits; or (2) override the bundled templates from your theme — see the **Theme template overrides** section above.
 
 == Changelog ==
+
+= 0.3.2 =
+* New: GameNight → Shortcodes admin page — in-product reference for every shortcode with attributes, examples, and copy-to-clipboard buttons.
 
 = 0.3.1 =
 * New: event editor exposes RSVP deadline, waitlist toggle, reminders toggle, and reminder offsets (comma-separated minutes).

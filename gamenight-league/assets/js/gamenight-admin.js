@@ -332,6 +332,33 @@
 		});
 	}
 
+	function bindShortcodes() {
+		document.querySelectorAll('.gnl-copy-btn').forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				var text = btn.getAttribute('data-copy') || '';
+				var status = btn.parentNode.querySelector('.gnl-copy-status');
+				var done = function (ok) {
+					setStatus(status, ok ? S.copied : S.copy_failed, ok ? 'ok' : 'err');
+					if (ok) {
+						setTimeout(function () { setStatus(status, '', ''); }, 1500);
+					}
+				};
+				if (navigator.clipboard && navigator.clipboard.writeText) {
+					navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+				} else {
+					// Fallback for older browsers / non-secure contexts.
+					var input = btn.parentNode.querySelector('.gnl-copy-input');
+					if (input) {
+						input.select();
+						try { document.execCommand('copy'); done(true); } catch (e) { done(false); }
+					} else {
+						done(false);
+					}
+				}
+			});
+		});
+	}
+
 	/* ---------- Boot ---------- */
 
 	document.addEventListener('DOMContentLoaded', function () {
@@ -344,5 +371,6 @@
 		else if (page === 'event-invitees') { bindEventInvitees(root); }
 		else if (page === 'posts') { bindPosts(); }
 		else if (page === 'post-edit') { bindPostEdit(root); }
+		else if (page === 'shortcodes') { bindShortcodes(); }
 	});
 })();

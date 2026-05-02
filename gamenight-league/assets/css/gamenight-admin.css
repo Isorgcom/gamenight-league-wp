@@ -58,3 +58,46 @@
 	font-size: 13px;
 	color: #555;
 }
+
+.gnl-admin .gnl-shortcode-card {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	padding: 12px 16px;
+	margin: 0 0 16px;
+}
+.gnl-admin .gnl-shortcode-card__tag {
+	margin: 0;
+	font-size: 16px;
+}
+.gnl-admin .gnl-shortcode-card__tag code {
+	background: #f0f0f1;
+	padding: 2px 6px;
+	border-radius: 3px;
+}
+.gnl-admin .gnl-shortcode-card__desc {
+	margin: 4px 0 8px;
+	color: #555;
+}
+.gnl-admin .gnl-shortcode-card__example {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin: 0 0 8px;
+}
+.gnl-admin .gnl-copy-input {
+	flex: 1;
+	font-family: Consolas, Monaco, monospace;
+	background: #f6f7f7;
+}
+.gnl-admin .gnl-copy-status {
+	font-size: 12px;
+	min-height: 1em;
+}
+.gnl-admin .gnl-shortcode-card__atts {
+	margin-top: 8px;
+}
+.gnl-admin .gnl-shortcode-card__atts th,
+.gnl-admin .gnl-shortcode-card__atts td {
+	padding: 6px 10px;
+}
