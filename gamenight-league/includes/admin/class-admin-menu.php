@@ -16,6 +16,8 @@ class Admin_Menu {
 	const SLUG_ROOT      = 'gnl-admin';
 	const SLUG_EVENTS    = 'gnl-admin-events';
 	const SLUG_EVENT_NEW = 'gnl-admin-event-new';
+	const SLUG_POSTS     = 'gnl-admin-posts';
+	const SLUG_POST_NEW  = 'gnl-admin-post-new';
 	const CAPABILITY     = 'manage_options';
 
 	/** @var Api_Client */
@@ -62,6 +64,22 @@ class Admin_Menu {
 			self::CAPABILITY,
 			self::SLUG_EVENT_NEW,
 			array( $this, 'render_event_edit' )
+		);
+		add_submenu_page(
+			self::SLUG_ROOT,
+			__( 'Posts', 'gamenight-league' ),
+			__( 'Posts', 'gamenight-league' ),
+			self::CAPABILITY,
+			self::SLUG_POSTS,
+			array( $this, 'render_posts' )
+		);
+		add_submenu_page(
+			self::SLUG_ROOT,
+			__( 'New post', 'gamenight-league' ),
+			__( 'New post', 'gamenight-league' ),
+			self::CAPABILITY,
+			self::SLUG_POST_NEW,
+			array( $this, 'render_post_edit' )
 		);
 	}
 
@@ -110,5 +128,27 @@ class Admin_Menu {
 			$event = $api->get_event( $event_id );
 		}
 		include GNL_PATH . 'includes/admin/views/view-event-edit.php';
+	}
+
+	public function render_posts() {
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return;
+		}
+		$api    = $this->api;
+		$result = $api->get_posts( 100, 0 );
+		include GNL_PATH . 'includes/admin/views/view-posts.php';
+	}
+
+	public function render_post_edit() {
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return;
+		}
+		$api     = $this->api;
+		$post_id = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0;
+		$post    = null;
+		if ( $post_id > 0 ) {
+			$post = $api->get_post( $post_id );
+		}
+		include GNL_PATH . 'includes/admin/views/view-post-edit.php';
 	}
 }

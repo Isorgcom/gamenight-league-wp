@@ -15,6 +15,8 @@ class Admin_Assets {
 		'toplevel_page_gnl-admin',
 		'gamenight_page_gnl-admin-events',
 		'gamenight_page_gnl-admin-event-new',
+		'gamenight_page_gnl-admin-posts',
+		'gamenight_page_gnl-admin-post-new',
 	);
 
 	public function register() {
@@ -45,6 +47,7 @@ class Admin_Assets {
 				'endpoint' => esc_url_raw( rest_url( 'gamenight/v1/' ) ),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
 				'eventsPage' => admin_url( 'admin.php?page=' . Admin_Menu::SLUG_EVENTS ),
+				'postsPage'  => admin_url( 'admin.php?page=' . Admin_Menu::SLUG_POSTS ),
 				'strings'  => array(
 					'role_updated'    => __( 'Role updated.', 'gamenight-league' ),
 					'role_failed'     => __( 'Could not update role.', 'gamenight-league' ),
@@ -64,6 +67,11 @@ class Admin_Assets {
 					'confirm_delete'  => __( 'Delete "%s"? Future events will notify invitees.', 'gamenight-league' ),
 					'confirm_remove'  => __( 'Remove this invitee?', 'gamenight-league' ),
 					'saving'          => __( 'Saving…', 'gamenight-league' ),
+					'post_saved'      => __( 'Post saved.', 'gamenight-league' ),
+					'post_failed'     => __( 'Could not save post.', 'gamenight-league' ),
+					'post_deleted'    => __( 'Post deleted.', 'gamenight-league' ),
+					/* translators: %s: post title */
+					'confirm_post_delete' => __( 'Delete "%s"? Comments on this post will also be deleted.', 'gamenight-league' ),
 				),
 			)
 		);

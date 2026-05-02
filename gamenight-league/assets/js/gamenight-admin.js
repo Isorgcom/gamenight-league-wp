@@ -249,6 +249,74 @@
 		}
 	}
 
+	function bindPosts() {
+		document.querySelectorAll('.gnl-post-delete').forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				var row = btn.closest('tr');
+				var id = row.getAttribute('data-post-id');
+				var title = row.getAttribute('data-post-title') || '';
+				var msg = (S.confirm_post_delete || 'Delete "%s"?').replace('%s', title);
+				if (!window.confirm(msg)) { return; }
+				var status = row.querySelector('.gnl-row-status');
+				setStatus(status, S.saving, '');
+				btn.disabled = true;
+				api('admin/posts/' + id, { method: 'DELETE' })
+					.then(function () {
+						setStatus(status, S.post_deleted, 'ok');
+						row.style.transition = 'opacity .3s';
+						row.style.opacity = '0.4';
+					})
+					.catch(function (err) {
+						setStatus(status, (S.post_failed + ' ' + err.message).trim(), 'err');
+						btn.disabled = false;
+					});
+			});
+		});
+	}
+
+	function bindPostEdit(root) {
+		var postId = parseInt(root.getAttribute('data-post-id'), 10);
+		var form = document.getElementById('gnl-post-form');
+		if (!form) { return; }
+
+		form.addEventListener('submit', function (ev) {
+			ev.preventDefault();
+			var status = form.querySelector('.gnl-form-status');
+			var btn = form.querySelector('button[type="submit"]');
+			setStatus(status, S.saving, '');
+			btn.disabled = true;
+
+			// Sync TinyMCE → underlying textarea before reading.
+			if (window.tinyMCE && window.tinyMCE.triggerSave) {
+				window.tinyMCE.triggerSave();
+			}
+
+			var fd = new FormData(form);
+			var payload = {
+				title: (fd.get('title') || '').toString(),
+				content: (fd.get('content') || '').toString(),
+				pinned: !!fd.get('pinned'),
+				hidden: !!fd.get('hidden')
+			};
+			if (postId === 0) {
+				var pubLocal = fd.get('published_at');
+				if (pubLocal) { payload.published_at = fromLocalInputToIso(pubLocal); }
+			}
+
+			var path = postId > 0 ? ('admin/posts/' + postId) : 'admin/posts';
+			var method = postId > 0 ? 'PATCH' : 'POST';
+			api(path, { method: method, body: payload })
+				.then(function () {
+					setStatus(status, S.post_saved, 'ok');
+					setTimeout(function () { window.location = window.GNLAdmin.postsPage; }, 600);
+				})
+				.catch(function (err) {
+					setStatus(status, (S.post_failed + ' ' + err.message).trim(), 'err');
+					btn.disabled = false;
+				});
+		});
+	}
+
 	/* ---------- Boot ---------- */
 
 	document.addEventListener('DOMContentLoaded', function () {
@@ -259,5 +327,7 @@
 		else if (page === 'events') { bindEvents(); }
 		else if (page === 'event-edit') { bindEventEdit(root); }
 		else if (page === 'event-invitees') { bindEventInvitees(root); }
+		else if (page === 'posts') { bindPosts(); }
+		else if (page === 'post-edit') { bindPostEdit(root); }
 	});
 })();

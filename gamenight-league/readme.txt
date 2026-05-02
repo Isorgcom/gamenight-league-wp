@@ -4,7 +4,7 @@ Tags: gamenight, league, poker, events, rsvp
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.2.0
+Stable tag: 0.3.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,6 +29,7 @@ The plugin also adds a **GameNight** menu in wp-admin where league managers can:
 * See upcoming and past events with RSVP counts
 * Create, edit, and delete events (including poker details)
 * Manage event invitees: add/remove people and override their RSVPs
+* Author league posts: create/edit/delete with a rich-text editor, pin or hide posts, schedule future posts
 
 Each WordPress site connects to one GameNight league via an API key minted from the league's admin page on gamenight.poker.
 
@@ -80,6 +81,24 @@ A single form covers both creating and editing. Fields:
 
 On save, the plugin redirects you back to the events list.
 
+= Posts =
+
+A table of league posts. Pinned posts are flagged with a "pinned" badge. Each row has **Edit** and **Delete** actions (delete confirms and cascades to comments).
+
+The **+ New post** button opens the post editor.
+
+= New post / Edit post =
+
+A standard form using WordPress's built-in rich-text editor (the same TinyMCE you're used to from regular WP posts):
+
+* **Title** (required, up to 200 characters)
+* **Content** (rich text — server sanitizes scripts/handlers/untrusted iframes before storage)
+* **Pinned** — sorts above unpinned posts
+* **Hidden** — soft-removes the post from public feeds without deleting it (useful for drafts)
+* **Publish date** (only on new posts) — leave blank to publish now, or set a future date to schedule. The date is locked once the post is created.
+
+Hidden posts are not returned by the API, so they will not appear in the Posts list view. Unhide them by editing — but you'll need the post ID to do so (we can't list hidden posts without an API change).
+
 = Event invitees (drill-down from Events → Invitees) =
 
 For one event:
@@ -123,6 +142,11 @@ The plugin exposes its own WordPress REST routes under the `gamenight/v1` namesp
 * `POST   /wp-json/gamenight/v1/admin/events/{id}/invitees/new-person` — body: `{ display_name, email?, phone? }` (creates user + invites in one call)
 * `PATCH  /wp-json/gamenight/v1/admin/events/{id}/invitees/{user_id}` — body: `{ rsvp?, event_role? }`
 * `DELETE /wp-json/gamenight/v1/admin/events/{id}/invitees/{user_id}`
+* `GET    /wp-json/gamenight/v1/admin/posts`
+* `POST   /wp-json/gamenight/v1/admin/posts` — body: `{ title, content, pinned?, hidden?, published_at? }`
+* `GET    /wp-json/gamenight/v1/admin/posts/{id}`
+* `PATCH  /wp-json/gamenight/v1/admin/posts/{id}` — body: `{ title?, content?, pinned?, hidden? }` (publish date is locked after creation)
+* `DELETE /wp-json/gamenight/v1/admin/posts/{id}`
 
 These are server-side proxies to the GameNight API (https://github.com/Isorgcom/GameNight/blob/main/DOCS.md). The GameNight API key never reaches the browser — calls flow Browser → WP REST → PHP → GameNight.
 
@@ -178,6 +202,12 @@ Not in this version. The GameNight admin menu and all admin REST endpoints requi
 Yes, two ways: (1) write CSS targeting the `.gnl-*` classes the plugin emits; or (2) override the bundled templates from your theme — see the **Theme template overrides** section above.
 
 == Changelog ==
+
+= 0.3.0 =
+* New: GameNight → Posts admin page for full post authoring (create / edit / delete).
+* New: rich-text editor (`wp_editor`) for post content, with server-side sanitization.
+* New: pin posts to the top of the public posts list, hide posts (soft-delete), schedule future posts via optional Publish date on creation.
+* New REST endpoints: `GET/POST /wp-json/gamenight/v1/admin/posts` and `GET/PATCH/DELETE /wp-json/gamenight/v1/admin/posts/{id}`.
 
 = 0.2.0 =
 * New: GameNight admin menu (gated by `manage_options`) — Members, Events, New event.

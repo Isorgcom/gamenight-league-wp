@@ -159,6 +159,10 @@ class Api_Client {
 		) );
 	}
 
+	public function get_post( $id ) {
+		return $this->cached_get( '/api/v1/posts/' . (int) $id );
+	}
+
 	public function get_rules() {
 		return $this->cached_get( '/api/v1/rules' );
 	}
@@ -246,5 +250,19 @@ class Api_Client {
 			'/api/v1/events/' . (int) $event_id . '/invites/' . (int) $user_id,
 			array( 'body' => array( 'rsvp' => null ) )
 		);
+	}
+
+	/* ---------- Posts CRUD (v0.3.0) ---------- */
+
+	public function create_post( array $payload ) {
+		return $this->request( 'POST', '/api/v1/posts', array( 'body' => $payload ) );
+	}
+
+	public function update_post( $id, array $payload ) {
+		return $this->request( 'PATCH', '/api/v1/posts/' . (int) $id, array( 'body' => $payload ) );
+	}
+
+	public function delete_post( $id ) {
+		return $this->request( 'DELETE', '/api/v1/posts/' . (int) $id );
 	}
 }

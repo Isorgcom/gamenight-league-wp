@@ -128,6 +128,36 @@ class Rest_Controller {
 				'permission_callback' => $admin_perm,
 			),
 		) );
+
+		register_rest_route( self::NAMESPACE_V1, '/admin/posts', array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'admin_list_posts' ),
+				'permission_callback' => $admin_perm,
+			),
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'admin_create_post' ),
+				'permission_callback' => $admin_perm,
+			),
+		) );
+		register_rest_route( self::NAMESPACE_V1, '/admin/posts/(?P<id>\d+)', array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'admin_get_post' ),
+				'permission_callback' => $admin_perm,
+			),
+			array(
+				'methods'             => 'PATCH',
+				'callback'            => array( $this, 'admin_update_post' ),
+				'permission_callback' => $admin_perm,
+			),
+			array(
+				'methods'             => WP_REST_Server::DELETABLE,
+				'callback'            => array( $this, 'admin_delete_post' ),
+				'permission_callback' => $admin_perm,
+			),
+		) );
 	}
 
 	public function admin_permission_check() {
@@ -308,6 +338,86 @@ class Rest_Controller {
 		}
 		$this->cache->flush_all();
 		return new WP_REST_Response( array( 'ok' => true, 'data' => array( 'updated' => true ) ), 200 );
+	}
+
+	/* ---------- Posts admin handlers (v0.3.0) ---------- */
+
+	public function admin_list_posts( WP_REST_Request $req ) {
+		// Re-fetch large window so admin sees hidden + pinned across recent history.
+		$limit  = (int) $req->get_param( 'limit' ) ?: 100;
+		$offset = (int) $req->get_param( 'offset' );
+		$res    = $this->api->get_posts( $limit, $offset );
+		return is_wp_error( $res ) ? $res : new WP_REST_Response( array( 'ok' => true, 'data' => $res ), 200 );
+	}
+
+	public function admin_get_post( WP_REST_Request $req ) {
+		$id  = (int) $req['id'];
+		$res = $this->api->get_post( $id );
+		return is_wp_error( $res ) ? $res : new WP_REST_Response( array( 'ok' => true, 'data' => $res ), 200 );
+	}
+
+	public function admin_create_post( WP_REST_Request $req ) {
+		$payload = $this->sanitize_post_payload( $req->get_json_params() ?: $req->get_params(), true );
+		if ( empty( $payload['title'] ) || empty( $payload['content'] ) ) {
+			return new WP_Error( 'gnl_post_required', __( 'Title and content are required.', 'gamenight-league' ), array( 'status' => 400 ) );
+		}
+		$res = $this->api->create_post( $payload );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$this->cache->flush_all();
+		return new WP_REST_Response( array( 'ok' => true, 'data' => $res ), 200 );
+	}
+
+	public function admin_update_post( WP_REST_Request $req ) {
+		$id      = (int) $req['id'];
+		$payload = $this->sanitize_post_payload( $req->get_json_params() ?: $req->get_params(), false );
+		if ( empty( $payload ) ) {
+			return new WP_Error( 'gnl_no_fields', __( 'Nothing to update.', 'gamenight-league' ), array( 'status' => 400 ) );
+		}
+		$res = $this->api->update_post( $id, $payload );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$this->cache->flush_all();
+		return new WP_REST_Response( array( 'ok' => true, 'data' => $res ), 200 );
+	}
+
+	public function admin_delete_post( WP_REST_Request $req ) {
+		$id  = (int) $req['id'];
+		$res = $this->api->delete_post( $id );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$this->cache->flush_all();
+		return new WP_REST_Response( array( 'ok' => true, 'data' => $res ), 200 );
+	}
+
+	/**
+	 * Whitelist + sanitize post fields. PATCH (allow_published_at=false) rejects
+	 * published_at because the API returns 400 on it.
+	 */
+	private function sanitize_post_payload( $raw, $allow_published_at ) {
+		if ( ! is_array( $raw ) ) {
+			return array();
+		}
+		$out = array();
+		if ( isset( $raw['title'] ) && '' !== trim( (string) $raw['title'] ) ) {
+			$out['title'] = sanitize_text_field( (string) $raw['title'] );
+		}
+		if ( isset( $raw['content'] ) && '' !== trim( (string) $raw['content'] ) ) {
+			$out['content'] = wp_kses_post( (string) $raw['content'] );
+		}
+		if ( array_key_exists( 'pinned', $raw ) ) {
+			$out['pinned'] = (bool) $raw['pinned'];
+		}
+		if ( array_key_exists( 'hidden', $raw ) ) {
+			$out['hidden'] = (bool) $raw['hidden'];
+		}
+		if ( $allow_published_at && ! empty( $raw['published_at'] ) ) {
+			$out['published_at'] = sanitize_text_field( (string) $raw['published_at'] );
+		}
+		return $out;
 	}
 
 	/**
