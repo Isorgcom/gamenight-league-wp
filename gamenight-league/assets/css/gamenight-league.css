@@ -1,0 +1,53 @@
+/* GameNight League — minimal, theme-friendly base styles. */
+
+.gnl { margin: 1em 0; }
+
+.gnl-league__name { margin: 0 0 .25em; }
+.gnl-league__desc { margin: 0 0 .5em; opacity: .85; }
+.gnl-league__meta { margin: 0; opacity: .7; font-size: .9em; }
+
+.gnl-events__list { list-style: none; padding: 0; margin: 0; }
+.gnl-event-card {
+	border: 1px solid rgba(0,0,0,.1);
+	border-radius: 6px;
+	padding: .75em 1em;
+	margin: 0 0 .75em;
+}
+.gnl-event-card__when { font-size: .85em; opacity: .7; }
+.gnl-event-card__title { font-weight: 600; margin: .15em 0; }
+.gnl-event-card__desc { opacity: .9; margin: .25em 0; }
+.gnl-event-card__rsvp { font-size: .85em; opacity: .7; }
+
+.gnl-event__title { margin: 0 0 .25em; }
+.gnl-event__when, .gnl-event__rsvp { margin: .25em 0; }
+.gnl-event__invitees { list-style: none; padding: 0; margin: .25em 0; }
+.gnl-invitee { display: inline-block; margin: 0 .5em .25em 0; padding: .1em .4em; border-radius: 4px; background: rgba(0,0,0,.05); font-size: .85em; }
+.gnl-invitee--yes { background: rgba(0,128,0,.12); }
+.gnl-invitee--no { background: rgba(200,0,0,.12); }
+.gnl-invitee--maybe { background: rgba(200,150,0,.15); }
+
+.gnl-roster__list { list-style: none; padding: 0; margin: 0; }
+.gnl-roster-row { padding: .25em 0; border-bottom: 1px dotted rgba(0,0,0,.08); }
+.gnl-roster-row__name { font-weight: 600; }
+.gnl-roster-row__role { opacity: .7; font-size: .9em; }
+.gnl-roster-row__pending { opacity: .6; font-style: italic; font-size: .85em; }
+
+.gnl-post { border-bottom: 1px solid rgba(0,0,0,.08); padding-bottom: 1em; margin-bottom: 1em; }
+.gnl-post__title { margin: 0 0 .25em; }
+.gnl-post__meta { font-size: .85em; opacity: .65; margin: 0 0 .5em; }
+.gnl-post__body { line-height: 1.5; }
+
+.gnl-rules__title { margin: 0 0 .5em; }
+.gnl-rules__body { line-height: 1.5; }
+
+.gnl-rsvp { max-width: 480px; }
+.gnl-rsvp__field { display: block; margin: 0 0 .75em; }
+.gnl-rsvp__field label { display: block; font-weight: 600; font-size: .9em; margin-bottom: .15em; }
+.gnl-rsvp__field input { width: 100%; padding: .4em .5em; box-sizing: border-box; }
+.gnl-rsvp__choice { border: none; padding: 0; margin: 0 0 .75em; }
+.gnl-rsvp__choice legend { font-weight: 600; font-size: .9em; margin-bottom: .25em; padding: 0; }
+.gnl-rsvp__choice label { margin-right: 1em; }
+.gnl-rsvp__button { padding: .5em 1em; cursor: pointer; }
+.gnl-rsvp__status { margin-top: .75em; min-height: 1.5em; }
+.gnl-rsvp__status--ok { color: #0a7d2c; }
+.gnl-rsvp__status--err { color: #b00020; }

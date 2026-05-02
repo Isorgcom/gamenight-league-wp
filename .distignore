@@ -1,0 +1,11 @@
+# Files and folders excluded from the WordPress.org SVN build.
+.git
+.gitignore
+.distignore
+.github
+.vscode
+.idea
+node_modules
+docs
+README.md
+*.zip

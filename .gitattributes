@@ -1,0 +1,13 @@
+# Force LF line endings for all text files. WordPress core, the WP.org SVN
+# build, and the WP-CLI readme parser all expect LF — Windows git's
+# core.autocrlf=true will silently rewrite to CRLF and break things.
+* text=auto eol=lf
+
+# Binary types — never touch.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.zip binary
+*.woff binary
+*.woff2 binary

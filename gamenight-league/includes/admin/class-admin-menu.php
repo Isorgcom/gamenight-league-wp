@@ -1,0 +1,114 @@
+<?php
+/**
+ * Top-level GameNight admin menu and page render dispatch.
+ */
+
+namespace GameNight\League\Admin;
+
+use GameNight\League\Api_Client;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+class Admin_Menu {
+
+	const SLUG_ROOT      = 'gnl-admin';
+	const SLUG_EVENTS    = 'gnl-admin-events';
+	const SLUG_EVENT_NEW = 'gnl-admin-event-new';
+	const CAPABILITY     = 'manage_options';
+
+	/** @var Api_Client */
+	private $api;
+
+	public function __construct( Api_Client $api ) {
+		$this->api = $api;
+	}
+
+	public function register() {
+		add_action( 'admin_menu', array( $this, 'add_menu' ) );
+	}
+
+	public function add_menu() {
+		add_menu_page(
+			__( 'GameNight', 'gamenight-league' ),
+			__( 'GameNight', 'gamenight-league' ),
+			self::CAPABILITY,
+			self::SLUG_ROOT,
+			array( $this, 'render_members' ),
+			'dashicons-groups',
+			30
+		);
+		add_submenu_page(
+			self::SLUG_ROOT,
+			__( 'Members', 'gamenight-league' ),
+			__( 'Members', 'gamenight-league' ),
+			self::CAPABILITY,
+			self::SLUG_ROOT,
+			array( $this, 'render_members' )
+		);
+		add_submenu_page(
+			self::SLUG_ROOT,
+			__( 'Events', 'gamenight-league' ),
+			__( 'Events', 'gamenight-league' ),
+			self::CAPABILITY,
+			self::SLUG_EVENTS,
+			array( $this, 'render_events' )
+		);
+		add_submenu_page(
+			self::SLUG_ROOT,
+			__( 'New event', 'gamenight-league' ),
+			__( 'New event', 'gamenight-league' ),
+			self::CAPABILITY,
+			self::SLUG_EVENT_NEW,
+			array( $this, 'render_event_edit' )
+		);
+	}
+
+	public function render_members() {
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return;
+		}
+		$api     = $this->api;
+		$members = $api->get_members();
+		include GNL_PATH . 'includes/admin/views/view-members.php';
+	}
+
+	public function render_events() {
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return;
+		}
+		$api  = $this->api;
+		$view = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : '';
+		if ( 'invitees' === $view ) {
+			$id = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0;
+			if ( $id <= 0 ) {
+				echo '<div class="wrap"><p>' . esc_html__( 'Missing event id.', 'gamenight-league' ) . '</p></div>';
+				return;
+			}
+			$event    = $api->get_event( $id );
+			$invitees = $api->get_event_invites( $id );
+			$members  = $api->get_members();
+			include GNL_PATH . 'includes/admin/views/view-event-invitees.php';
+			return;
+		}
+		$tab    = isset( $_GET['tab'] ) && 'past' === $_GET['tab'] ? 'past' : 'upcoming';
+		$result = ( 'past' === $tab )
+			? $api->get_events( gmdate( 'Y-m-d', strtotime( '-365 days' ) ), gmdate( 'Y-m-d' ) )
+			: $api->get_events();
+		include GNL_PATH . 'includes/admin/views/view-events.php';
+	}
+
+	public function render_event_edit() {
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return;
+		}
+		$api      = $this->api;
+		$event_id = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0;
+		$event    = null;
+		if ( $event_id > 0 ) {
+			$event = $api->get_event( $event_id );
+		}
+		include GNL_PATH . 'includes/admin/views/view-event-edit.php';
+	}
+}

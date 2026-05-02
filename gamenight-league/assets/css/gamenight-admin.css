@@ -1,0 +1,52 @@
+/* GameNight admin styles — minimal, leans on WP admin defaults. */
+
+.gnl-admin .gnl-table { margin-top: 1em; }
+.gnl-admin .gnl-table th, .gnl-admin .gnl-table td { vertical-align: middle; }
+
+.gnl-admin .gnl-badge {
+	display: inline-block;
+	padding: 1px 8px;
+	border-radius: 10px;
+	background: #e0e0e0;
+	color: #444;
+	font-size: 11px;
+	margin-left: 6px;
+	vertical-align: middle;
+}
+.gnl-admin .gnl-badge--owner { background: #ffe7a8; color: #6a4400; }
+.gnl-admin .gnl-badge--pending { background: #ffd4d4; color: #6a0000; }
+
+.gnl-admin .gnl-row-status,
+.gnl-admin .gnl-form-status {
+	display: inline-block;
+	margin-left: 8px;
+	font-size: 12px;
+	min-height: 1em;
+}
+.gnl-admin .gnl-status--ok { color: #0a7d2c; }
+.gnl-admin .gnl-status--err { color: #b00020; }
+
+.gnl-admin .gnl-event-when {
+	font-size: 13px;
+	color: #666;
+	font-weight: normal;
+	margin-left: 12px;
+}
+
+.gnl-admin .gnl-poker-fields {
+	border-top: 1px solid #e0e0e0;
+	margin-top: 1em;
+	padding-top: 0.5em;
+}
+
+.gnl-admin .gnl-rsvp-select,
+.gnl-admin .gnl-role-select {
+	min-width: 130px;
+}
+
+.gnl-admin #gnl-add-invitee-form {
+	margin-top: 0.75em;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
