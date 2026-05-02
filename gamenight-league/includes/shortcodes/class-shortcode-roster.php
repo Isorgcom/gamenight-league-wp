@@ -13,6 +13,7 @@ class Shortcode_Roster extends Shortcode_Base {
 		return array(
 			'hide_pending' => 'no',
 			'sort'         => 'name',
+			'show_join'    => 'yes',
 		);
 	}
 

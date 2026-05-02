@@ -55,6 +55,22 @@ class Rest_Controller {
 			)
 		);
 
+		// Public: anonymous-visitor "join the league" (no event involved).
+		register_rest_route(
+			self::NAMESPACE_V1,
+			'/join',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'handle_join' ),
+				'permission_callback' => '__return_true',
+				'args'                => array(
+					'display_name' => array( 'required' => true, 'type' => 'string' ),
+					'email'        => array( 'required' => false, 'type' => 'string' ),
+					'phone'        => array( 'required' => false, 'type' => 'string' ),
+				),
+			)
+		);
+
 		// Admin: capability-gated mirrors of the GameNight write endpoints.
 		$admin_perm = array( $this, 'admin_permission_check' );
 
@@ -551,6 +567,58 @@ class Rest_Controller {
 			array(
 				'ok'      => true,
 				'message' => __( 'RSVP recorded.', 'gamenight-league' ),
+			),
+			200
+		);
+	}
+
+	public function handle_join( WP_REST_Request $req ) {
+		$display_name = sanitize_text_field( (string) $req->get_param( 'display_name' ) );
+		$email        = sanitize_email( (string) $req->get_param( 'email' ) );
+		$phone        = sanitize_text_field( (string) $req->get_param( 'phone' ) );
+
+		if ( '' === $display_name ) {
+			return new WP_Error( 'gnl_bad_name', __( 'Please provide your name.', 'gamenight-league' ), array( 'status' => 400 ) );
+		}
+		if ( '' === $email && '' === $phone ) {
+			return new WP_Error( 'gnl_need_contact', __( 'Please provide an email or phone number.', 'gamenight-league' ), array( 'status' => 400 ) );
+		}
+		if ( '' !== $email && ! is_email( $email ) ) {
+			return new WP_Error( 'gnl_bad_email', __( 'Please provide a valid email address.', 'gamenight-league' ), array( 'status' => 400 ) );
+		}
+
+		// Per-IP rate limit (transient counter), shared with RSVP route.
+		$ip      = $this->client_ip();
+		$rl_key  = 'gnl_rl_' . md5( $ip );
+		$current = (int) get_transient( $rl_key );
+		if ( $current >= self::RATE_LIMIT_MAX ) {
+			return new WP_Error( 'gnl_rate_limit', __( 'Too many attempts. Please try again in a few minutes.', 'gamenight-league' ), array( 'status' => 429 ) );
+		}
+		set_transient( $rl_key, $current + 1, self::RATE_LIMIT_SECS );
+
+		$payload = array( 'display_name' => $display_name );
+		if ( '' !== $email ) {
+			$payload['email'] = $email;
+		}
+		if ( '' !== $phone ) {
+			$payload['phone'] = $phone;
+		}
+
+		$user = $this->api->create_user( $payload );
+		if ( is_wp_error( $user ) ) {
+			return $user;
+		}
+
+		$this->cache->flush_all();
+
+		$created = ! empty( $user['created'] );
+		return new WP_REST_Response(
+			array(
+				'ok'      => true,
+				'message' => $created
+					? __( 'Welcome — you\'re in the league.', 'gamenight-league' )
+					: __( 'You\'re already a member of this league.', 'gamenight-league' ),
+				'created' => $created,
 			),
 			200
 		);

@@ -4,7 +4,7 @@ Tags: gamenight, league, poker, events, rsvp
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.3.2
+Stable tag: 0.4.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,7 @@ Shortcodes render the public-facing parts of your league. Drop them into any pag
 * `[gamenight_posts limit="10" offset="0"]` — League posts/announcements.
 * `[gamenight_rules]` — The league's rules post.
 * `[gamenight_rsvp event_id="123"]` — A standalone RSVP form. Anonymous visitors fill in name + email/phone + yes/maybe/no; the plugin creates them as a league member (idempotent on email/phone) and records the RSVP. Pair it with `[gamenight_event id="123"]` on the same page.
+* `[gamenight_join]` — A standalone "Join the league" form (no event involved). Visitors fill in name + email/phone; the plugin creates them as a league member (idempotent on email/phone). The `[gamenight_roster]` shortcode also surfaces this form via a "Want to join?" link by default — pass `show_join="no"` to suppress.
 
 == Admin pages (managing your league) ==
 
@@ -130,6 +131,7 @@ The plugin exposes its own WordPress REST routes under the `gamenight/v1` namesp
 = Public =
 
 * `POST /wp-json/gamenight/v1/rsvp` — Anonymous RSVP submission. Used by the `[gamenight_rsvp]` form. Body: `{ event_id, display_name, email?, phone?, rsvp }`. Protected by a WP nonce + per-IP rate limit (5 requests / 10 minutes).
+* `POST /wp-json/gamenight/v1/join` — Anonymous "join the league" submission. Used by the `[gamenight_join]` form. Body: `{ display_name, email?, phone? }` (one of email/phone required). Protected by the same WP nonce + per-IP rate limit as `/rsvp`.
 
 = Admin (require `manage_options` + `X-WP-Nonce` header) =
 
@@ -168,7 +170,7 @@ This plugin connects to the GameNight API at the URL you configure (default: `ht
 **What is sent to GameNight:**
 
 * On every page view that contains a shortcode, the plugin makes a server-side request to the GameNight API to fetch league data. Your site's URL is included in the User-Agent header for support purposes.
-* When a visitor submits the RSVP form, the plugin forwards the visitor's name, email, phone (if provided), and RSVP choice to the GameNight API. This is how the visitor is identified to the league.
+* When a visitor submits the RSVP form OR the Join form, the plugin forwards the visitor's name, email, and phone (if provided) to the GameNight API. This is how the visitor is identified to the league.
 
 **What is NOT collected by this plugin:**
 
@@ -205,6 +207,12 @@ Not in this version. The GameNight admin menu and all admin REST endpoints requi
 Yes, two ways: (1) write CSS targeting the `.gnl-*` classes the plugin emits; or (2) override the bundled templates from your theme — see the **Theme template overrides** section above.
 
 == Changelog ==
+
+= 0.4.0 =
+* New: `[gamenight_join]` shortcode — a standalone "Join the league" form for anonymous visitors. Calls the GameNight `POST /api/v1/users` endpoint server-side; idempotent on email/phone.
+* New: `[gamenight_roster]` now appends a "Want to join?" link by default that reveals an inline join form. Pass `show_join="no"` to suppress.
+* New public REST route: `POST /wp-json/gamenight/v1/join` — protected by WP nonce + per-IP rate limit (shared with /rsvp).
+* Privacy section updated: visitor email/phone submitted via the join form is forwarded to GameNight (same flow as RSVP).
 
 = 0.3.2 =
 * New: GameNight → Shortcodes admin page — in-product reference for every shortcode with attributes, examples, and copy-to-clipboard buttons.

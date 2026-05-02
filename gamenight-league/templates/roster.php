@@ -24,4 +24,21 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 			<?php endforeach; ?>
 		</ul>
 	<?php endif; ?>
+
+	<?php
+	$show_join = isset( $atts['show_join'] ) && 'yes' === strtolower( (string) $atts['show_join'] );
+	if ( $show_join ) :
+		$join_form = gnl_render_template( 'join-form' );
+		if ( $join_form ) :
+			?>
+			<div class="gnl-join-reveal" data-gnl-join-reveal>
+				<button type="button" class="gnl-join-reveal__button">
+					<?php esc_html_e( 'Want to join the league?', 'gamenight-league' ); ?>
+				</button>
+				<div class="gnl-join-reveal__slot" hidden>
+					<?php echo $join_form; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- template output already escaped ?>
+				</div>
+			</div>
+		<?php endif; ?>
+	<?php endif; ?>
 </section>

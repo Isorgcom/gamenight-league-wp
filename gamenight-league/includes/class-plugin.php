@@ -12,6 +12,7 @@ use GameNight\League\Shortcodes\Shortcode_Roster;
 use GameNight\League\Shortcodes\Shortcode_Posts;
 use GameNight\League\Shortcodes\Shortcode_Rules;
 use GameNight\League\Shortcodes\Shortcode_Rsvp;
+use GameNight\League\Shortcodes\Shortcode_Join;
 use GameNight\League\Admin\Admin_Menu;
 use GameNight\League\Admin\Admin_Assets;
 
@@ -61,6 +62,7 @@ class Plugin {
 		( new Shortcode_Posts( $this->api ) )->register();
 		( new Shortcode_Rules( $this->api ) )->register();
 		( new Shortcode_Rsvp( $this->api ) )->register();
+		( new Shortcode_Join( $this->api ) )->register();
 
 		if ( is_admin() ) {
 			( new Admin_Menu( $this->api ) )->register();
@@ -89,6 +91,7 @@ class Plugin {
 			'gamenight_posts',
 			'gamenight_rules',
 			'gamenight_rsvp',
+			'gamenight_join',
 		);
 		$found = false;
 		foreach ( $tags as $tag ) {
@@ -114,6 +117,29 @@ class Plugin {
 						'submitting' => __( 'Submitting…', 'gamenight-league' ),
 						'thanks'     => __( 'Thanks — your RSVP was recorded.', 'gamenight-league' ),
 						'error'      => __( 'Something went wrong. Please try again.', 'gamenight-league' ),
+					),
+				)
+			);
+		}
+
+		// Join JS loads if [gamenight_join] is on the page OR if [gamenight_roster]
+		// is on the page (since roster optionally renders an inline join form).
+		$needs_join = has_shortcode( $post->post_content, 'gamenight_join' )
+			|| has_shortcode( $post->post_content, 'gamenight_roster' );
+		if ( $needs_join ) {
+			wp_enqueue_script( 'gamenight-league-join', GNL_URL . 'assets/js/join.js', array(), GNL_VERSION, true );
+			wp_localize_script(
+				'gamenight-league-join',
+				'GNLJoin',
+				array(
+					'endpoint' => esc_url_raw( rest_url( 'gamenight/v1/join' ) ),
+					'nonce'    => wp_create_nonce( 'wp_rest' ),
+					'strings'  => array(
+						'submitting' => __( 'Submitting…', 'gamenight-league' ),
+						'welcome'    => __( 'Welcome — you\'re in the league.', 'gamenight-league' ),
+						'already'    => __( 'You\'re already a member of this league.', 'gamenight-league' ),
+						'error'      => __( 'Something went wrong. Please try again.', 'gamenight-league' ),
+						'reveal'     => __( 'Want to join the league?', 'gamenight-league' ),
 					),
 				)
 			);

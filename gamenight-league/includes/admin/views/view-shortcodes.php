@@ -33,11 +33,12 @@ $shortcodes = array(
 	),
 	array(
 		'tag'      => 'gamenight_roster',
-		'desc'     => __( 'League roster.', 'gamenight-league' ),
+		'desc'     => __( 'League roster, with an optional "Want to join the league?" link that expands an inline join form.', 'gamenight-league' ),
 		'example'  => '[gamenight_roster]',
 		'atts'     => array(
 			array( 'hide_pending', __( 'yes / no', 'gamenight-league' ),    'no',     __( 'Omit members who have not accepted yet.', 'gamenight-league' ) ),
 			array( 'sort',         __( 'name | role | joined', 'gamenight-league' ), 'name', __( 'Sort order.', 'gamenight-league' ) ),
+			array( 'show_join',    __( 'yes / no', 'gamenight-league' ),    'yes',    __( 'Append a "Want to join?" link that reveals a join form. Set to "no" to suppress.', 'gamenight-league' ) ),
 		),
 	),
 	array(
@@ -62,6 +63,12 @@ $shortcodes = array(
 		'atts'     => array(
 			array( 'event_id', __( 'integer', 'gamenight-league' ), __( 'required', 'gamenight-league' ), __( 'GameNight event id.', 'gamenight-league' ) ),
 		),
+	),
+	array(
+		'tag'      => 'gamenight_join',
+		'desc'     => __( 'Standalone "Join the league" form. Visitors enter name + email/phone (one required); the plugin creates them as a league member (idempotent on email/phone). No event involved — useful for a sign-up page or sidebar widget.', 'gamenight-league' ),
+		'example'  => '[gamenight_join]',
+		'atts'     => array(),
 	),
 );
 ?>

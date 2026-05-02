@@ -3,7 +3,7 @@
  * Plugin Name:       GameNight League
  * Plugin URI:        https://gamenight.poker/
  * Description:       Display your GameNight league roster, events, posts, and accept RSVPs on any WordPress site. Powered by the GameNight API.
- * Version:           0.3.2
+ * Version:           0.4.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            GameNight
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GNL_VERSION', '0.3.2' );
+define( 'GNL_VERSION', '0.4.0' );
 define( 'GNL_FILE', __FILE__ );
 define( 'GNL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'GNL_URL', plugin_dir_url( __FILE__ ) );
@@ -37,6 +37,7 @@ require_once GNL_PATH . 'includes/shortcodes/class-shortcode-roster.php';
 require_once GNL_PATH . 'includes/shortcodes/class-shortcode-posts.php';
 require_once GNL_PATH . 'includes/shortcodes/class-shortcode-rules.php';
 require_once GNL_PATH . 'includes/shortcodes/class-shortcode-rsvp.php';
+require_once GNL_PATH . 'includes/shortcodes/class-shortcode-join.php';
 require_once GNL_PATH . 'includes/admin/class-admin-menu.php';
 require_once GNL_PATH . 'includes/admin/class-admin-assets.php';
 require_once GNL_PATH . 'includes/class-plugin.php';

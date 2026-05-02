@@ -51,3 +51,25 @@
 .gnl-rsvp__status { margin-top: .75em; min-height: 1.5em; }
 .gnl-rsvp__status--ok { color: #0a7d2c; }
 .gnl-rsvp__status--err { color: #b00020; }
+
+.gnl-join { max-width: 480px; margin: 1em 0; }
+.gnl-join__field { display: block; margin: 0 0 .75em; }
+.gnl-join__field label { display: block; font-weight: 600; font-size: .9em; margin-bottom: .15em; }
+.gnl-join__field input { width: 100%; padding: .4em .5em; box-sizing: border-box; }
+.gnl-join__button { padding: .5em 1em; cursor: pointer; }
+.gnl-join__status { margin-top: .75em; min-height: 1.5em; }
+.gnl-join__status--ok { color: #0a7d2c; }
+.gnl-join__status--err { color: #b00020; }
+
+.gnl-join-reveal { margin-top: 1em; }
+.gnl-join-reveal__button {
+	background: none;
+	border: none;
+	color: #2563eb;
+	cursor: pointer;
+	padding: .25em 0;
+	font: inherit;
+	text-decoration: underline;
+}
+.gnl-join-reveal__button:hover { opacity: .8; }
+.gnl-join-reveal__slot { margin-top: .75em; }
