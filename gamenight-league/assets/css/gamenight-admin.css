@@ -50,3 +50,11 @@
 	gap: 8px;
 	align-items: center;
 }
+
+.gnl-admin .gnl-inline-check {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 13px;
+	color: #555;
+}

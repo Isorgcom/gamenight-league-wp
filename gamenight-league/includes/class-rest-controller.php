@@ -239,10 +239,11 @@ class Rest_Controller {
 	public function admin_add_invitee( WP_REST_Request $req ) {
 		$id      = (int) $req['id'];
 		$user_id = (int) $req->get_param( 'user_id' );
+		$manager = (bool) $req->get_param( 'manager' );
 		if ( $user_id <= 0 ) {
 			return new WP_Error( 'gnl_bad_user', __( 'user_id is required.', 'gamenight-league' ), array( 'status' => 400 ) );
 		}
-		$res = $this->api->add_invitee( $id, $user_id );
+		$res = $this->api->add_invitee( $id, $user_id, $manager );
 		if ( is_wp_error( $res ) ) {
 			return $res;
 		}
@@ -255,6 +256,7 @@ class Rest_Controller {
 		$display_name = sanitize_text_field( (string) $req->get_param( 'display_name' ) );
 		$email        = sanitize_email( (string) $req->get_param( 'email' ) );
 		$phone        = sanitize_text_field( (string) $req->get_param( 'phone' ) );
+		$manager      = (bool) $req->get_param( 'manager' );
 
 		if ( '' === $display_name ) {
 			return new WP_Error( 'gnl_bad_name', __( 'Name is required.', 'gamenight-league' ), array( 'status' => 400 ) );
@@ -279,7 +281,7 @@ class Rest_Controller {
 			return new WP_Error( 'gnl_no_user_id', __( 'Could not resolve user id.', 'gamenight-league' ), array( 'status' => 502 ) );
 		}
 
-		$add = $this->api->add_invitee( $id, $user_id );
+		$add = $this->api->add_invitee( $id, $user_id, $manager );
 		if ( is_wp_error( $add ) ) {
 			$status = (int) ( $add->get_error_data()['status'] ?? 0 );
 			if ( $status && 409 !== $status ) {

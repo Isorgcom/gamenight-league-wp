@@ -19,7 +19,23 @@ $buyin       = (string) ( $e['poker_buyin'] ?? '' );
 $tables      = (string) ( $e['poker_tables'] ?? '' );
 $seats       = (string) ( $e['poker_seats'] ?? '' );
 $game_type   = (string) ( $e['poker_game_type'] ?? '' );
+
+$allowed_game_types = array(
+	'tournament' => __( 'Tournament', 'gamenight-league' ),
+	'cash'       => __( 'Cash', 'gamenight-league' ),
+);
+if ( '' !== $game_type && ! isset( $allowed_game_types[ $game_type ] ) ) {
+	$game_type = '';
+}
 $color       = (string) ( $e['color'] ?? '#2563eb' );
+
+$rsvp_deadline_hours = isset( $e['rsvp_deadline_hours'] ) ? (string) (int) $e['rsvp_deadline_hours'] : '';
+$waitlist_enabled    = ! array_key_exists( 'waitlist_enabled', $e ) || ! empty( $e['waitlist_enabled'] );
+$reminders_enabled   = ! array_key_exists( 'reminders_enabled', $e ) || ! empty( $e['reminders_enabled'] );
+$reminder_offsets    = '';
+if ( ! empty( $e['reminder_offsets'] ) && is_array( $e['reminder_offsets'] ) ) {
+	$reminder_offsets = implode( ', ', array_map( 'intval', $e['reminder_offsets'] ) );
+}
 
 $allowed_colors = array(
 	'#2563eb' => __( 'Blue', 'gamenight-league' ),
@@ -96,6 +112,42 @@ $to_local_input = static function ( $iso ) {
 			</tr>
 		</table>
 
+		<h2><?php esc_html_e( 'RSVPs &amp; reminders', 'gamenight-league' ); ?></h2>
+		<table class="form-table" role="presentation">
+			<tr>
+				<th><label for="gnl-rsvp-deadline"><?php esc_html_e( 'RSVP deadline (hours before start)', 'gamenight-league' ); ?></label></th>
+				<td>
+					<input id="gnl-rsvp-deadline" name="rsvp_deadline_hours" type="number" min="0" step="1" class="small-text" value="<?php echo esc_attr( $rsvp_deadline_hours ); ?>" />
+					<p class="description"><?php esc_html_e( 'Leave blank to allow RSVPs right up to start time.', 'gamenight-league' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th><?php esc_html_e( 'Waitlist (poker only)', 'gamenight-league' ); ?></th>
+				<td>
+					<label>
+						<input type="checkbox" name="waitlist_enabled" value="1" <?php checked( $waitlist_enabled ); ?> />
+						<?php esc_html_e( 'Auto-waitlist invitees beyond seats × tables', 'gamenight-league' ); ?>
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<th><?php esc_html_e( 'Reminders', 'gamenight-league' ); ?></th>
+				<td>
+					<label>
+						<input type="checkbox" name="reminders_enabled" value="1" <?php checked( $reminders_enabled ); ?> />
+						<?php esc_html_e( 'Send reminder notifications to invitees', 'gamenight-league' ); ?>
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="gnl-reminder-offsets"><?php esc_html_e( 'Reminder offsets (minutes)', 'gamenight-league' ); ?></label></th>
+				<td>
+					<input id="gnl-reminder-offsets" name="reminder_offsets" type="text" class="regular-text" placeholder="2880, 720" value="<?php echo esc_attr( $reminder_offsets ); ?>" />
+					<p class="description"><?php esc_html_e( 'Comma-separated minutes before start_at (e.g. 2880, 720 = 48h and 12h). Leave blank to use site defaults.', 'gamenight-league' ); ?></p>
+				</td>
+			</tr>
+		</table>
+
 		<div class="gnl-poker-fields" <?php echo $is_poker ? '' : 'style="display:none"'; ?>>
 			<h2><?php esc_html_e( 'Poker details', 'gamenight-league' ); ?></h2>
 			<table class="form-table" role="presentation">
@@ -113,7 +165,14 @@ $to_local_input = static function ( $iso ) {
 				</tr>
 				<tr>
 					<th><label for="gnl-game-type"><?php esc_html_e( 'Game type', 'gamenight-league' ); ?></label></th>
-					<td><input id="gnl-game-type" name="poker_game_type" type="text" class="regular-text" value="<?php echo esc_attr( $game_type ); ?>" /></td>
+					<td>
+						<select id="gnl-game-type" name="poker_game_type">
+							<option value=""><?php esc_html_e( '— not set —', 'gamenight-league' ); ?></option>
+							<?php foreach ( $allowed_game_types as $val => $label ) : ?>
+								<option value="<?php echo esc_attr( $val ); ?>" <?php selected( $game_type, $val ); ?>><?php echo esc_html( $label ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</td>
 				</tr>
 			</table>
 		</div>

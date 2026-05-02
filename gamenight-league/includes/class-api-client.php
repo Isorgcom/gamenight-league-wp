@@ -173,15 +173,17 @@ class Api_Client {
 		return $this->request( 'POST', '/api/v1/users', array( 'body' => $payload ) );
 	}
 
-	public function add_invitee( $event_id, $user_id ) {
+	public function add_invitee( $event_id, $user_id, $manager = false ) {
+		$invitee = array( 'user_id' => (int) $user_id );
+		if ( $manager ) {
+			$invitee['manager'] = true;
+		}
 		return $this->request(
 			'POST',
 			'/api/v1/events/' . (int) $event_id . '/invites',
 			array(
 				'body' => array(
-					'invitees' => array(
-						array( 'user_id' => (int) $user_id ),
-					),
+					'invitees' => array( $invitee ),
 				),
 			)
 		);

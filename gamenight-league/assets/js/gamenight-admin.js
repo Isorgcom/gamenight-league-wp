@@ -124,10 +124,22 @@
 				description: fd.get('description') || '',
 				color: fd.get('color') || '',
 				is_poker: !!fd.get('is_poker'),
+				waitlist_enabled: !!fd.get('waitlist_enabled'),
+				reminders_enabled: !!fd.get('reminders_enabled'),
 				start_at: fromLocalInputToIso(fd.get('start_at')),
 			};
 			var endLocal = fd.get('end_at');
 			if (endLocal) { payload.end_at = fromLocalInputToIso(endLocal); }
+			var deadline = fd.get('rsvp_deadline_hours');
+			if (deadline !== null && deadline !== '') {
+				payload.rsvp_deadline_hours = parseInt(deadline, 10);
+			}
+			var offsets = (fd.get('reminder_offsets') || '').toString().trim();
+			if (offsets) {
+				payload.reminder_offsets = offsets.split(',')
+					.map(function (s) { return parseInt(s.trim(), 10); })
+					.filter(function (n) { return !isNaN(n) && n >= 0; });
+			}
 			if (payload.is_poker) {
 				['poker_buyin', 'poker_tables', 'poker_seats'].forEach(function (k) {
 					var v = fd.get(k);
@@ -205,8 +217,10 @@
 				var status = addForm.querySelector('.gnl-form-status');
 				var userId = parseInt(sel.value, 10);
 				if (!userId) { return; }
+				var managerInput = addForm.querySelector('input[name="manager"]');
+				var manager = !!(managerInput && managerInput.checked);
 				setStatus(status, S.saving, '');
-				api('admin/events/' + eventId + '/invitees', { method: 'POST', body: { user_id: userId } })
+				api('admin/events/' + eventId + '/invitees', { method: 'POST', body: { user_id: userId, manager: manager } })
 					.then(function () {
 						setStatus(status, S.invitee_added, 'ok');
 						setTimeout(function () { window.location.reload(); }, 400);
@@ -227,7 +241,8 @@
 				var payload = {
 					display_name: (fd.get('display_name') || '').toString().trim(),
 					email: (fd.get('email') || '').toString().trim(),
-					phone: (fd.get('phone') || '').toString().trim()
+					phone: (fd.get('phone') || '').toString().trim(),
+					manager: !!fd.get('manager')
 				};
 				if (!payload.display_name) { return; }
 				if (!payload.email && !payload.phone) {

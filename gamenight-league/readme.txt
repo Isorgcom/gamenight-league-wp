@@ -4,7 +4,7 @@ Tags: gamenight, league, poker, events, rsvp
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.3.0
+Stable tag: 0.3.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,9 @@ A single form covers both creating and editing. Fields:
 * **Title**, **Start**, **End** (optional) — start/end use a datetime picker in your site's timezone.
 * **Description**, **Color** (limited to GameNight's allowed palette).
 * **Poker event?** — toggle that reveals **Buy-in**, **Tables**, **Seats per table**, **Game type**.
+* **RSVP deadline (hours before start)** — locks RSVPs once the deadline passes. Leave blank to allow RSVPs right up to start time.
+* **Waitlist** (poker only) — auto-waitlist invitees beyond `seats × tables`.
+* **Reminders** — toggle reminder notifications, plus a comma-separated **Reminder offsets (minutes)** field (e.g. `2880, 720` for 48h and 12h before start).
 
 On save, the plugin redirects you back to the events list.
 
@@ -202,6 +205,10 @@ Not in this version. The GameNight admin menu and all admin REST endpoints requi
 Yes, two ways: (1) write CSS targeting the `.gnl-*` classes the plugin emits; or (2) override the bundled templates from your theme — see the **Theme template overrides** section above.
 
 == Changelog ==
+
+= 0.3.1 =
+* New: event editor exposes RSVP deadline, waitlist toggle, reminders toggle, and reminder offsets (comma-separated minutes).
+* New: "as event manager" checkbox on the event invitee picker and on the "Add new person" form, so a manager can be invited with the right role from the start.
 
 = 0.3.0 =
 * New: GameNight → Posts admin page for full post authoring (create / edit / delete).

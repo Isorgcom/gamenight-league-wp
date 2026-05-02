@@ -112,6 +112,10 @@ if ( is_array( $members ) ) {
 					</option>
 				<?php endforeach; ?>
 			</select>
+			<label class="gnl-inline-check">
+				<input type="checkbox" name="manager" value="1" />
+				<?php esc_html_e( 'as event manager', 'gamenight-league' ); ?>
+			</label>
 			<button type="submit" class="button"><?php esc_html_e( 'Add', 'gamenight-league' ); ?></button>
 			<span class="gnl-form-status" aria-live="polite"></span>
 		</form>
@@ -136,6 +140,15 @@ if ( is_array( $members ) ) {
 				<td>
 					<input id="gnl-np-phone" name="phone" type="tel" class="regular-text" />
 					<p class="description"><?php esc_html_e( 'Email or phone is required (one is enough).', 'gamenight-league' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th><?php esc_html_e( 'Role', 'gamenight-league' ); ?></th>
+				<td>
+					<label>
+						<input type="checkbox" name="manager" value="1" />
+						<?php esc_html_e( 'Add as event manager', 'gamenight-league' ); ?>
+					</label>
 				</td>
 			</tr>
 		</table>
