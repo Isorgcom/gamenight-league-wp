@@ -4,7 +4,7 @@ Tags: gamenight, league, poker, events, rsvp
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.4.0
+Stable tag: 0.4.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,10 @@ Not in this version. The GameNight admin menu and all admin REST endpoints requi
 Yes, two ways: (1) write CSS targeting the `.gnl-*` classes the plugin emits; or (2) override the bundled templates from your theme — see the **Theme template overrides** section above.
 
 == Changelog ==
+
+= 0.4.1 =
+* Fix: `[gamenight_posts]` and `[gamenight_rules]` now preserve inline `style`, `class`, and `bgcolor` attributes on the API's content HTML. Previously WordPress's default `wp_kses_post()` filter stripped them, which destroyed colors and Word-pasted formatting.
+* New filter: `gnl_allowed_html` lets themes adjust the allowlist used for API content sanitization.
 
 = 0.4.0 =
 * New: `[gamenight_join]` shortcode — a standalone "Join the league" form for anonymous visitors. Calls the GameNight `POST /api/v1/users` endpoint server-side; idempotent on email/phone.

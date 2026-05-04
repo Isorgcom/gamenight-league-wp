@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	<?php else : ?>
 		<h3 class="gnl-rules__title"><?php echo esc_html( $rules['title'] ?? '' ); ?></h3>
 		<div class="gnl-rules__body">
-			<?php echo wp_kses_post( $rules['content_html'] ?? '' ); ?>
+			<?php echo gnl_kses_rich( $rules['content_html'] ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
 	<?php endif; ?>
 </section>

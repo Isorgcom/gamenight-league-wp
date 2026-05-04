@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 					?>
 				</p>
 				<div class="gnl-post__body">
-					<?php echo wp_kses_post( $p['content_html'] ?? '' ); ?>
+					<?php echo gnl_kses_rich( $p['content_html'] ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</div>
 			</article>
 		<?php endforeach; ?>
