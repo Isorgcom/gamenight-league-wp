@@ -5,6 +5,7 @@
  * Available vars: $events (array), $atts (array)
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-local scope.
 ?>
 <section class="gnl gnl-events">
 	<?php if ( empty( $events ) ) : ?>

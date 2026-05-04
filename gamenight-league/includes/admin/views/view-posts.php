@@ -6,6 +6,8 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-local scope.
+
 $new_url = admin_url( 'admin.php?page=' . \GameNight\League\Admin\Admin_Menu::SLUG_POST_NEW );
 $posts   = is_wp_error( $result ) ? array() : ( $result['posts'] ?? array() );
 ?>

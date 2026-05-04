@@ -6,6 +6,8 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-local scope.
+
 $is_new = ( 0 === $event_id || ! is_array( $event ) );
 $err    = is_wp_error( $event ) ? $event->get_error_message() : '';
 $e      = is_array( $event ) ? $event : array();

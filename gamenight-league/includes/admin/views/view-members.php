@@ -6,6 +6,7 @@
  * Available vars: $members (array|WP_Error), $api
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-local scope.
 ?>
 <div class="wrap gnl-admin" data-gnl-admin-page="members">
 	<h1><?php esc_html_e( 'Members', 'gamenight-league' ); ?></h1>

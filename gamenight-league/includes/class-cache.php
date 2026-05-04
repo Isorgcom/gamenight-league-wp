@@ -43,8 +43,13 @@ class Cache {
 	public function flush_all() {
 		global $wpdb;
 		$like = $wpdb->esc_like( '_transient_' . self::PREFIX ) . '%';
+		// Direct DB query: WordPress has no native API for "delete transients by
+		// prefix"; iterating get_option() lists would be far slower. No caching:
+		// this IS the cache invalidation path, so wp_cache_* would be circular.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like ) );
 		$timeout_like = $wpdb->esc_like( '_transient_timeout_' . self::PREFIX ) . '%';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $timeout_like ) );
 	}
 }

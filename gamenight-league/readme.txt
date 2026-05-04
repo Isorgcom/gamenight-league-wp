@@ -2,9 +2,9 @@
 Contributors: gamenight
 Tags: gamenight, league, poker, events, rsvp
 Requires at least: 6.0
-Tested up to: 6.7
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.4.2
+Stable tag: 0.4.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -216,6 +216,15 @@ Not in this version. The GameNight admin menu and all admin REST endpoints requi
 Yes, two ways: (1) write CSS targeting the `.gnl-*` classes the plugin emits; or (2) override the bundled templates from your theme — see the **Theme template overrides** section above.
 
 == Changelog ==
+
+= 0.4.3 =
+* New: Events admin table now shows the event **ID** as a column — useful when you need an id for `[gamenight_event id="..."]` or `[gamenight_rsvp event_id="..."]`.
+* Fix: bumped `Tested up to` to 6.9 so the plugin shows up in WP.org searches.
+* Fix: moved misplaced "translators:" comments to satisfy Plugin Check's I18n sniff.
+* Fix: `error_log()` calls in the API client are now gated behind `WP_DEBUG`, so production sites stay quiet.
+* Fix: dropped the redundant `load_plugin_textdomain()` call (WordPress.org auto-loads translations since WP 4.6).
+* Fix: `$_SERVER['REMOTE_ADDR']` is now properly unslashed and sanitized in the rate-limit check.
+* Internal: passes Plugin Check (the WP.org review tool) with zero errors and zero warnings; added empty `languages/` folder for WP.org submission readiness.
 
 = 0.4.2 =
 * New: Members admin page now supports full member management — add a new member from an inline form, remove a registered member (sends a notification), and edit or delete pending invites (display name / email / phone).

@@ -5,6 +5,7 @@
  * Available vars: $members (array), $atts (array)
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-local scope.
 ?>
 <section class="gnl gnl-roster">
 	<?php if ( empty( $members ) ) : ?>

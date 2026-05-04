@@ -6,6 +6,8 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-local scope.
+
 $events_url   = admin_url( 'admin.php?page=' . \GameNight\League\Admin\Admin_Menu::SLUG_EVENTS );
 $new_url      = admin_url( 'admin.php?page=' . \GameNight\League\Admin\Admin_Menu::SLUG_EVENT_NEW );
 $upcoming_url = add_query_arg( 'tab', 'upcoming', $events_url );
@@ -30,6 +32,7 @@ $events = is_wp_error( $result ) ? array() : ( $result['events'] ?? array() );
 		<table class="widefat striped gnl-table">
 			<thead>
 				<tr>
+					<th class="gnl-cell-id"><?php esc_html_e( 'ID', 'gamenight-league' ); ?></th>
 					<th><?php esc_html_e( 'When', 'gamenight-league' ); ?></th>
 					<th><?php esc_html_e( 'Title', 'gamenight-league' ); ?></th>
 					<th><?php esc_html_e( 'RSVPs (Y / M / N)', 'gamenight-league' ); ?></th>
@@ -44,6 +47,7 @@ $events = is_wp_error( $result ) ? array() : ( $result['events'] ?? array() );
 					$title        = (string) ( $e['title'] ?? '' );
 					?>
 					<tr data-event-id="<?php echo esc_attr( (string) $id ); ?>" data-event-title="<?php echo esc_attr( $title ); ?>">
+						<td class="gnl-cell-id"><code><?php echo (int) $id; ?></code></td>
 						<td><?php echo esc_html( gnl_format_datetime( $e['start_at'] ?? '' ) ); ?></td>
 						<td><strong><?php echo esc_html( $title ); ?></strong></td>
 						<td>

@@ -45,7 +45,9 @@ class Plugin {
 	}
 
 	public function init() {
-		load_plugin_textdomain( 'gamenight-league', false, dirname( plugin_basename( GNL_FILE ) ) . '/languages' );
+		// WordPress.org auto-loads translations for hosted plugins since WP 4.6;
+		// no manual load_plugin_textdomain() call needed. The Domain Path header
+		// in the main file points to the languages/ folder for tooling.
 
 		$this->cache    = new Cache();
 		$this->api      = new Api_Client( $this->cache );

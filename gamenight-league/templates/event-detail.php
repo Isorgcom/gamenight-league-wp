@@ -5,6 +5,7 @@
  * Available vars: $event (array), $invitees (array), $atts (array)
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-local scope.
 ?>
 <section class="gnl gnl-event">
 	<h3 class="gnl-event__title"><?php echo esc_html( $event['title'] ?? '' ); ?></h3>
@@ -21,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	<p class="gnl-event__rsvp">
 		<?php
 		printf(
+			/* translators: 1: yes count, 2: maybe count, 3: no count */
 			esc_html__( 'Yes %1$d · Maybe %2$d · No %3$d', 'gamenight-league' ),
 			(int) ( $event['rsvp_yes_count'] ?? 0 ),
 			(int) ( $event['rsvp_maybe_count'] ?? 0 ),

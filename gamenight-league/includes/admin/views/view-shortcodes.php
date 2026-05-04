@@ -4,6 +4,8 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-local scope.
+
 $shortcodes = array(
 	array(
 		'tag'      => 'gamenight_league',
@@ -119,8 +121,8 @@ $shortcodes = array(
 	<h2><?php esc_html_e( 'Theme template overrides', 'gamenight-league' ); ?></h2>
 	<p>
 		<?php
-		/* translators: 1: template path, 2: theme example path */
 		printf(
+			/* translators: 1: template path, 2: theme example path */
 			esc_html__( 'Every shortcode renders through a PHP template you can override from your theme. Copy any file from %1$s to a folder named %2$s in your theme.', 'gamenight-league' ),
 			'<code>gamenight-league/templates/</code>',
 			'<code>your-theme/gamenight-league/</code>'

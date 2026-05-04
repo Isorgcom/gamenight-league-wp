@@ -6,6 +6,8 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-local scope.
+
 $back_url = admin_url( 'admin.php?page=' . \GameNight\League\Admin\Admin_Menu::SLUG_EVENTS );
 
 $event_title  = is_array( $event ) ? (string) ( $event['title'] ?? '' ) : '';

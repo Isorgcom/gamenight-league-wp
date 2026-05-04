@@ -32,6 +32,16 @@ class Api_Client {
 		return '' !== $this->key() && '' !== $this->base_url();
 	}
 
+	/**
+	 * Log to PHP error_log only when WP_DEBUG is on. Never logs the API key.
+	 */
+	private function debug_log( $message ) {
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- WP_DEBUG-gated; no key in payload.
+			error_log( '[GameNight] ' . $message );
+		}
+	}
+
 	public function key() {
 		return (string) get_option( self::OPT_KEY, '' );
 	}
@@ -82,7 +92,7 @@ class Api_Client {
 		$response = wp_remote_request( $url, $request_args );
 
 		if ( is_wp_error( $response ) ) {
-			error_log( '[GameNight] Transport error on ' . $method . ' ' . $path . ': ' . $response->get_error_message() );
+			$this->debug_log( 'Transport error on ' . $method . ' ' . $path . ': ' . $response->get_error_message() );
 			return $response;
 		}
 
@@ -91,13 +101,13 @@ class Api_Client {
 		$json   = json_decode( $body, true );
 
 		if ( ! is_array( $json ) ) {
-			error_log( '[GameNight] Non-JSON response on ' . $method . ' ' . $path . ' (status ' . $status . ')' );
+			$this->debug_log( 'Non-JSON response on ' . $method . ' ' . $path . ' (status ' . $status . ')' );
 			return new WP_Error( 'gnl_bad_response', __( 'Unexpected response from GameNight API.', 'gamenight-league' ), array( 'status' => $status ) );
 		}
 
 		if ( empty( $json['ok'] ) ) {
 			$msg = isset( $json['error'] ) ? (string) $json['error'] : 'Unknown API error.';
-			error_log( '[GameNight] API error on ' . $method . ' ' . $path . ' (status ' . $status . '): ' . $msg );
+			$this->debug_log( 'API error on ' . $method . ' ' . $path . ' (status ' . $status . '): ' . $msg );
 			return new WP_Error( 'gnl_api_error', $msg, array( 'status' => $status ) );
 		}
 

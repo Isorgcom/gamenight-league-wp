@@ -105,7 +105,10 @@ class Admin_Menu {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
 			return;
 		}
-		$api  = $this->api;
+		$api = $this->api;
+		// Admin page routing reads — capability-gated above; no state changes
+		// happen here, so a nonce isn't appropriate.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		$view = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : '';
 		if ( 'invitees' === $view ) {
 			$id = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0;
@@ -119,7 +122,9 @@ class Admin_Menu {
 			include GNL_PATH . 'includes/admin/views/view-event-invitees.php';
 			return;
 		}
-		$tab    = isset( $_GET['tab'] ) && 'past' === $_GET['tab'] ? 'past' : 'upcoming';
+		$tab_raw = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+		$tab    = ( 'past' === $tab_raw ) ? 'past' : 'upcoming';
 		$result = ( 'past' === $tab )
 			? $api->get_events( gmdate( 'Y-m-d', strtotime( '-365 days' ) ), gmdate( 'Y-m-d' ) )
 			: $api->get_events();
@@ -130,7 +135,9 @@ class Admin_Menu {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
 			return;
 		}
-		$api      = $this->api;
+		$api = $this->api;
+		// Admin page routing read — capability-gated above; no state changes here.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$event_id = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0;
 		$event    = null;
 		if ( $event_id > 0 ) {
@@ -152,7 +159,9 @@ class Admin_Menu {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
 			return;
 		}
-		$api     = $this->api;
+		$api = $this->api;
+		// Admin page routing read — capability-gated above; no state changes here.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$post_id = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0;
 		$post    = null;
 		if ( $post_id > 0 ) {
