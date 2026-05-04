@@ -75,14 +75,40 @@ class Rest_Controller {
 		$admin_perm = array( $this, 'admin_permission_check' );
 
 		register_rest_route( self::NAMESPACE_V1, '/admin/members', array(
-			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => array( $this, 'admin_list_members' ),
-			'permission_callback' => $admin_perm,
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'admin_list_members' ),
+				'permission_callback' => $admin_perm,
+			),
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'admin_create_member' ),
+				'permission_callback' => $admin_perm,
+			),
 		) );
 		register_rest_route( self::NAMESPACE_V1, '/admin/members/(?P<user_id>\d+)', array(
-			'methods'             => 'PATCH',
-			'callback'            => array( $this, 'admin_update_member' ),
-			'permission_callback' => $admin_perm,
+			array(
+				'methods'             => 'PATCH',
+				'callback'            => array( $this, 'admin_update_member' ),
+				'permission_callback' => $admin_perm,
+			),
+			array(
+				'methods'             => WP_REST_Server::DELETABLE,
+				'callback'            => array( $this, 'admin_delete_member' ),
+				'permission_callback' => $admin_perm,
+			),
+		) );
+		register_rest_route( self::NAMESPACE_V1, '/admin/pending-contacts/(?P<member_id>\d+)', array(
+			array(
+				'methods'             => 'PATCH',
+				'callback'            => array( $this, 'admin_update_pending_contact' ),
+				'permission_callback' => $admin_perm,
+			),
+			array(
+				'methods'             => WP_REST_Server::DELETABLE,
+				'callback'            => array( $this, 'admin_delete_pending_contact' ),
+				'permission_callback' => $admin_perm,
+			),
 		) );
 
 		register_rest_route( self::NAMESPACE_V1, '/admin/events', array(
@@ -191,6 +217,77 @@ class Rest_Controller {
 		$user_id = (int) $req['user_id'];
 		$role    = sanitize_text_field( (string) $req->get_param( 'role' ) );
 		$res     = $this->api->update_member_role( $user_id, $role );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$this->cache->flush_all();
+		return new WP_REST_Response( array( 'ok' => true, 'data' => $res ), 200 );
+	}
+
+	public function admin_create_member( WP_REST_Request $req ) {
+		$display_name = sanitize_text_field( (string) $req->get_param( 'display_name' ) );
+		$email        = sanitize_email( (string) $req->get_param( 'email' ) );
+		$phone        = sanitize_text_field( (string) $req->get_param( 'phone' ) );
+
+		if ( '' === $display_name ) {
+			return new WP_Error( 'gnl_bad_name', __( 'Name is required.', 'gamenight-league' ), array( 'status' => 400 ) );
+		}
+		if ( '' === $email && '' === $phone ) {
+			return new WP_Error( 'gnl_need_contact', __( 'Email or phone is required.', 'gamenight-league' ), array( 'status' => 400 ) );
+		}
+		if ( '' !== $email && ! is_email( $email ) ) {
+			return new WP_Error( 'gnl_bad_email', __( 'Invalid email address.', 'gamenight-league' ), array( 'status' => 400 ) );
+		}
+
+		$payload = array( 'display_name' => $display_name );
+		if ( '' !== $email ) { $payload['email'] = $email; }
+		if ( '' !== $phone ) { $payload['phone'] = $phone; }
+
+		$res = $this->api->create_user( $payload );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$this->cache->flush_all();
+		return new WP_REST_Response( array( 'ok' => true, 'data' => $res ), 200 );
+	}
+
+	public function admin_delete_member( WP_REST_Request $req ) {
+		$user_id = (int) $req['user_id'];
+		$res     = $this->api->delete_member( $user_id );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$this->cache->flush_all();
+		return new WP_REST_Response( array( 'ok' => true, 'data' => $res ), 200 );
+	}
+
+	public function admin_update_pending_contact( WP_REST_Request $req ) {
+		$member_id = (int) $req['member_id'];
+		$raw       = $req->get_json_params() ?: $req->get_params();
+		$payload   = array();
+		if ( isset( $raw['display_name'] ) ) {
+			$payload['display_name'] = sanitize_text_field( (string) $raw['display_name'] );
+		}
+		if ( array_key_exists( 'email', $raw ) ) {
+			$payload['email'] = sanitize_email( (string) $raw['email'] );
+		}
+		if ( array_key_exists( 'phone', $raw ) ) {
+			$payload['phone'] = sanitize_text_field( (string) $raw['phone'] );
+		}
+		if ( empty( $payload ) ) {
+			return new WP_Error( 'gnl_no_fields', __( 'Nothing to update.', 'gamenight-league' ), array( 'status' => 400 ) );
+		}
+		$res = $this->api->update_pending_contact( $member_id, $payload );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$this->cache->flush_all();
+		return new WP_REST_Response( array( 'ok' => true, 'data' => $res ), 200 );
+	}
+
+	public function admin_delete_pending_contact( WP_REST_Request $req ) {
+		$member_id = (int) $req['member_id'];
+		$res       = $this->api->delete_pending_contact( $member_id );
 		if ( is_wp_error( $res ) ) {
 			return $res;
 		}

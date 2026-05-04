@@ -4,7 +4,7 @@ Tags: gamenight, league, poker, events, rsvp
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.4.1
+Stable tag: 0.4.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,7 +60,12 @@ After activation, a **GameNight** menu appears in your wp-admin sidebar (visible
 
 = Members =
 
-A table of every member of your league: name, role, join date, status (active or pending). For non-owner active members, the **Role** column is a dropdown — change it to `Member` or `Manager` and the change saves instantly. Owners are read-only (the API doesn't allow changing the owner role).
+A table of every member of your league: name, role, join date, status (active or pending), and per-row actions.
+
+* For non-owner active members, the **Role** column is a dropdown — change it to `Member` or `Manager` and the change saves instantly. **Remove** removes the member from the league (the API sends them a notification; their user account and other-league memberships are not touched).
+* For pending contacts (people invited by email/phone who haven't claimed an account yet), an inline **Edit** button reveals a form to change their display name, email, and phone. Changing email or phone regenerates their invite link automatically. **Remove** silently deletes the pending row.
+* Owners are read-only (the API rejects role changes and removals on the league owner — use the in-app Transfer ownership flow first).
+* An **Add member** form below the table creates a new user and adds them to the league in one step. If the email or phone matches an existing user, that existing user is added (no duplicate is created).
 
 = Events =
 
@@ -136,7 +141,11 @@ The plugin exposes its own WordPress REST routes under the `gamenight/v1` namesp
 = Admin (require `manage_options` + `X-WP-Nonce` header) =
 
 * `GET    /wp-json/gamenight/v1/admin/members`
+* `POST   /wp-json/gamenight/v1/admin/members` — body: `{ display_name, email?, phone? }` (one of email/phone required)
 * `PATCH  /wp-json/gamenight/v1/admin/members/{user_id}` — body: `{ role: "member"|"manager" }`
+* `DELETE /wp-json/gamenight/v1/admin/members/{user_id}`
+* `PATCH  /wp-json/gamenight/v1/admin/pending-contacts/{member_id}` — body: `{ display_name?, email?, phone? }`
+* `DELETE /wp-json/gamenight/v1/admin/pending-contacts/{member_id}`
 * `GET    /wp-json/gamenight/v1/admin/events?from=&to=&include_past=1`
 * `POST   /wp-json/gamenight/v1/admin/events` — create event
 * `GET    /wp-json/gamenight/v1/admin/events/{id}`
@@ -207,6 +216,12 @@ Not in this version. The GameNight admin menu and all admin REST endpoints requi
 Yes, two ways: (1) write CSS targeting the `.gnl-*` classes the plugin emits; or (2) override the bundled templates from your theme — see the **Theme template overrides** section above.
 
 == Changelog ==
+
+= 0.4.2 =
+* New: Members admin page now supports full member management — add a new member from an inline form, remove a registered member (sends a notification), and edit or delete pending invites (display name / email / phone).
+* New: Each member row now uses the API's `member_id` field for stable addressing of pending contacts.
+* New REST endpoints: `POST/DELETE /wp-json/gamenight/v1/admin/members` and `PATCH/DELETE /wp-json/gamenight/v1/admin/pending-contacts/{member_id}`.
+* Owner row is read-only and protected (matches the API's `cannot_remove_owner` rule).
 
 = 0.4.1 =
 * Fix: `[gamenight_posts]` and `[gamenight_rules]` now preserve inline `style`, `class`, and `bgcolor` attributes on the API's content HTML. Previously WordPress's default `wp_kses_post()` filter stripped them, which destroyed colors and Word-pasted formatting.

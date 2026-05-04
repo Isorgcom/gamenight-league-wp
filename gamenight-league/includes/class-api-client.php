@@ -267,4 +267,22 @@ class Api_Client {
 	public function delete_post( $id ) {
 		return $this->request( 'DELETE', '/api/v1/posts/' . (int) $id );
 	}
+
+	/* ---------- Member management (v0.4.2) ---------- */
+
+	public function delete_member( $user_id ) {
+		return $this->request( 'DELETE', '/api/v1/members/' . (int) $user_id );
+	}
+
+	public function update_pending_contact( $member_id, array $payload ) {
+		return $this->request(
+			'PATCH',
+			'/api/v1/pending-contacts/' . (int) $member_id,
+			array( 'body' => $payload )
+		);
+	}
+
+	public function delete_pending_contact( $member_id ) {
+		return $this->request( 'DELETE', '/api/v1/pending-contacts/' . (int) $member_id );
+	}
 }

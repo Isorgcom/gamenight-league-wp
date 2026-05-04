@@ -52,6 +52,18 @@ class Admin_Assets {
 				'strings'  => array(
 					'role_updated'    => __( 'Role updated.', 'gamenight-league' ),
 					'role_failed'     => __( 'Could not update role.', 'gamenight-league' ),
+					'member_added'    => __( 'Member added.', 'gamenight-league' ),
+					'member_add_failed' => __( 'Could not add member.', 'gamenight-league' ),
+					'member_removed'  => __( 'Member removed.', 'gamenight-league' ),
+					'member_remove_failed' => __( 'Could not remove member.', 'gamenight-league' ),
+					'pending_saved'   => __( 'Pending contact updated.', 'gamenight-league' ),
+					'pending_save_failed' => __( 'Could not update pending contact.', 'gamenight-league' ),
+					'pending_deleted' => __( 'Pending invite deleted.', 'gamenight-league' ),
+					'pending_delete_failed' => __( 'Could not delete pending invite.', 'gamenight-league' ),
+					/* translators: %s: member display name */
+					'confirm_member_delete' => __( 'Remove "%s" from the league? They will receive a notification.', 'gamenight-league' ),
+					/* translators: %s: pending contact display name */
+					'confirm_pending_delete' => __( 'Delete pending invite for "%s"? Their invite link will stop working.', 'gamenight-league' ),
 					'rsvp_updated'    => __( 'RSVP updated.', 'gamenight-league' ),
 					'rsvp_failed'     => __( 'Could not update RSVP.', 'gamenight-league' ),
 					'invitee_added'   => __( 'Invitee added.', 'gamenight-league' ),
