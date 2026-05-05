@@ -4,7 +4,7 @@ Tags: gamenight, league, poker, events, rsvp
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.4.4
+Stable tag: 0.4.5
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -225,6 +225,9 @@ Not in this version. The GameNight admin menu and all admin REST endpoints requi
 Yes, two ways: (1) write CSS targeting the `.gnl-*` classes the plugin emits; or (2) override the bundled templates from your theme — see the **Theme template overrides** section above.
 
 == Changelog ==
+
+= 0.4.5 =
+* Fix: silence Plugin Check's `PrefixAllGlobals.NonPrefixedConstantFound` sniff for the plugin's `GNL_*` constants. The sniff doesn't recognize 3-character prefixes; the Plugin Review Team accepts them per public guidelines.
 
 = 0.4.4 =
 * Fix: distinct `Plugin URI` and `Author URI` headers (WP.org rejects submissions where they're identical). `Plugin URI` now points to the GitHub repo; `Author URI` keeps gamenight.poker.
