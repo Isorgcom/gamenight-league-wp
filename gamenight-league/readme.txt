@@ -189,6 +189,15 @@ This plugin connects to the GameNight API at the URL you configure (default: `ht
 
 The site administrator is responsible for disclosing this data flow to visitors per applicable privacy laws (GDPR, CCPA, etc.).
 
+== Screenshots ==
+
+1. Public-facing league page rendered from the GameNight shortcodes — league summary, upcoming events with RSVP counts, and the join form.
+2. **GameNight → Members** in wp-admin: change roles inline, edit or remove pending invites, and add new members.
+3. **GameNight → Events**: full event list with RSVP counts, IDs (handy for `[gamenight_event id="..."]` shortcodes), and per-row Edit / Invitees / Delete actions.
+4. Event editor with the poker fields revealed — buy-in, tables, seats, game type, plus RSVP deadline, waitlist, and reminder offsets.
+5. Per-event invitee management: change RSVPs on someone's behalf, add an existing member, or invite a brand-new person who isn't in the league yet.
+6. Post editor (the standard WordPress rich-text editor) with pin / hide / scheduled-publish controls.
+
 == Frequently Asked Questions ==
 
 = Where do I get an API key? =
