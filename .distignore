@@ -1,5 +1,6 @@
 # Files and folders excluded from the WordPress.org SVN build.
 .git
+.gitattributes
 .gitignore
 .distignore
 .github
@@ -7,5 +8,6 @@
 .idea
 node_modules
 docs
+wporg-assets
 README.md
 *.zip

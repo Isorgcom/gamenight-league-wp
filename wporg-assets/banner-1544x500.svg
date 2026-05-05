@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1544" height="500" viewBox="0 0 1544 500">
+  <!-- Background gradient: GameNight blue → deeper blue -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+  </defs>
+  <rect width="1544" height="500" fill="url(#bg)"/>
+
+  <!-- Faded card suits as decorative background, top right -->
+  <g fill="#ffffff" opacity="0.08" font-family="Georgia, 'Times New Roman', serif" font-size="380" text-anchor="middle">
+    <text x="1280" y="380">♠</text>
+    <text x="1430" y="240">♣</text>
+  </g>
+
+  <!-- Plugin name + tagline -->
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" fill="#ffffff">
+    <text x="80" y="220" font-size="110" font-weight="700" letter-spacing="-2">GameNight</text>
+    <text x="80" y="320" font-size="80" font-weight="300" opacity="0.92">League</text>
+    <text x="80" y="400" font-size="32" font-weight="400" opacity="0.85">A WordPress companion to gamenight.poker</text>
+  </g>
+
+  <!-- Small suit accent next to title -->
+  <g fill="#fca5a5" font-family="Georgia, 'Times New Roman', serif" font-size="64" opacity="0.95">
+    <text x="660" y="220">♥</text>
+    <text x="730" y="220">♦</text>
+  </g>
+</svg>
